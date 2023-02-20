@@ -23,12 +23,51 @@ function getTextData(idName) {
 }
 
 // sum functions
+
 const sum = (prevValue, newValue) => {
-  return prevValue + newValue;
+  // check if number is greater than 0
+  if (newValue > 0) {
+    console.log("The number is positive");
+    return prevValue + newValue;
+  }
+  // check if number is 0
+  else if (newValue == 0) {
+    console.log("The number is zero");
+    return prevValue + newValue;
+  }
+
+  // if number is less than 0
+  else {
+    console.log("The number is negative");
+    alert("Please enter positive value!");
+    return prevValue;
+  }
 };
 
+// subtraction functions
+
 const subtraction = (prevValue, newValue) => {
-  return prevValue - newValue;
+  if (prevValue > newValue) {
+    // check if number is greater than 0
+    if (newValue > 0) {
+      console.log("The number is positive");
+      return prevValue - newValue;
+    }
+    // check if number is 0
+    else if (newValue == 0) {
+      console.log("The number is zero");
+      return prevValue - newValue;
+    }
+
+    // if number is less than 0
+    else {
+      console.log("The number is negative");
+      alert("Please enter positive value! We will do the math for you");
+      return prevValue;
+    }
+  } else {
+    return 0;
+  }
 };
 
 function setValue(previousValueId, newValue) {
