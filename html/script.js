@@ -178,13 +178,21 @@ const decrement = (value) => {
 const scoreReducer = (state = allMatches, action) => {
   if (action.type === INCREMENT) {
     const updatedState = { ...state };
-    updatedState[0].value = updatedState[0].value + action.payload;
+    // updatedState[0].value = updatedState[0].value + action.payload;
+    // updatedState[0].value += action.payload; // used += short hand  for addition assignment operator.
+
+    // validation for positive and Nan
+    updatedState[0].value = sum(updatedState[0].value, action.payload);
+
     console.log(updatedState);
     return updatedState;
   } else if (action.type === DECREMENT) {
     const newObj = { ...state };
-    newObj[0].value = newObj[0].value - action.payload;
-    console.log(newObj);
+    // newObj[0].value = newObj[0].value - action.payload;
+    // newObj[0].value - +action.payload; // used -= short hand  for subtraction assignment operator.
+
+    // validation for positive and Nan
+    newObj[0].value = subtraction(newObj[0].value, action.payload);
     return newObj;
   } else return state;
 };
@@ -207,7 +215,6 @@ store.subscribe(render);
 // event Listeners
 document.getElementById("increment").addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
-    // console.log("5");
     const value = getInputValue("increment");
     value.innerText = "";
     e.preventDefault();
@@ -217,14 +224,10 @@ document.getElementById("increment").addEventListener("keypress", function (e) {
 
 document.getElementById("decrement").addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
-    // let value = incrementFunc("decrement", "text-data");
-    // setValue("text-data", value);
     const value = getInputValue("decrement").toString();
     value.innerText = "";
     console.log(value);
     e.preventDefault();
     store.dispatch(decrement(value));
-    // e.target.value = "";
-    // return value;
   }
 });
