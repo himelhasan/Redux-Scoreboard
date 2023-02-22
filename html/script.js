@@ -1,12 +1,10 @@
-// functions
+// functions to get and set dom properties
 
 function getInputValue(idName) {
   let input = document.getElementById(idName);
   let inputValue = input.value;
-  console.log(typeof inputValue);
   let valueInNum = parseFloat(inputValue);
-  console.log(typeof valueInNum);
-  inputValue.value = "";
+  input.value = "";
   return valueInNum;
 }
 
@@ -16,13 +14,16 @@ function getTextData(idName) {
   return inputNumber;
 }
 
-// sum functions
+function setValue(previousValueId, newValue) {
+  let setNewValue = (document.getElementById(previousValueId).innerText = newValue);
+  return setNewValue;
+}
 
+// Math functions
+// sum functions
 const sum = (prevValue, newValue) => {
   // check if number is greater than 0
-
   if (newValue > 0) {
-    console.log("The number is positive");
     return prevValue + newValue;
   }
   // check if number is 0
@@ -30,17 +31,14 @@ const sum = (prevValue, newValue) => {
     console.log("The number is zero");
     return prevValue + newValue;
   }
-
   // if number is less than 0
   else {
-    console.log("The number is negative");
     alert("Please enter positive value!");
     return prevValue;
   }
 };
 
-// subtraction functions
-
+// // subtraction functions
 const subtraction = (prevValue, newValue) => {
   if (prevValue < newValue) {
     return 0;
@@ -65,17 +63,11 @@ const subtraction = (prevValue, newValue) => {
   }
 };
 
-function setValue(previousValueId, newValue) {
-  let setNewValue = (document.getElementById(previousValueId).innerText = newValue);
-  return setNewValue;
-}
-
 function incrementFunc(newValueID, prevValueID) {
   let newValue = getInputValue(newValueID);
   let prevValue = getTextData(prevValueID);
   let totalSum = sum(prevValue, newValue);
   newValue.innerText = "";
-  console.log(totalSum);
   return totalSum;
 }
 function decrementFunc(newValueID, prevValueID) {
@@ -86,28 +78,26 @@ function decrementFunc(newValueID, prevValueID) {
   return totalSum;
 }
 
-document.getElementById("increment").addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    let value = incrementFunc("increment", "text-data");
-    setValue("text-data", value);
-    e.preventDefault();
-    e.target.value = "";
-    return value;
-  }
-});
+// event listener
+// document.getElementById("increment").addEventListener("keypress", function (e) {
+//   if (e.key === "Enter") {
+//     let value = incrementFunc("increment", "text-data");
+//     setValue("text-data", value);
+//     e.preventDefault();
+//     e.target.value = "";
+//     return value;
+//   }
+// });
 
-document.getElementById("decrement").addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    let value = decrementFunc("decrement", "text-data");
-    setValue("text-data", value);
-    e.preventDefault();
-    e.target.value = "";
-    return value;
-  }
-});
-
-// all dom elements
-const allMatches = [];
+// document.getElementById("decrement").addEventListener("keypress", function (e) {
+//   if (e.key === "Enter") {
+//     let value = decrementFunc("decrement", "text-data");
+//     setValue("text-data", value);
+//     e.preventDefault();
+//     e.target.value = "";
+//     return value;
+//   }
+// });
 
 // add A match
 
@@ -150,3 +140,91 @@ function addAMatch() {
 
   matches.appendChild(div);
 }
+
+// ////////////////////////////
+
+// redux js codes
+
+// all dom elements
+const allMatches = [
+  {
+    value: 12000,
+    id: "text-data",
+  },
+];
+
+console.log(allMatches[0].value);
+// action identifier
+
+const INCREMENT = "increment";
+const DECREMENT = "decrement";
+
+// action creator
+const increment = (value) => {
+  return {
+    type: INCREMENT,
+    payload: value,
+  };
+};
+const decrement = (value) => {
+  return {
+    type: DECREMENT,
+    payload: value,
+  };
+};
+
+// reducer function
+
+const scoreReducer = (state = allMatches, action) => {
+  if (action.type === INCREMENT) {
+    const updatedState = { ...state };
+    updatedState[0].value = updatedState[0].value + action.payload;
+    console.log(updatedState);
+    return updatedState;
+  } else if (action.type === DECREMENT) {
+    const newObj = { ...state };
+    newObj[0].value = newObj[0].value - action.payload;
+    console.log(newObj);
+    return newObj;
+  } else return state;
+};
+
+// create store
+const store = Redux.createStore(scoreReducer);
+
+// render to ui
+const render = () => {
+  const state = store.getState();
+  setValue(allMatches[0].id, allMatches[0].value);
+};
+
+// initially render
+render();
+
+// subscribe to store
+store.subscribe(render);
+
+// event Listeners
+document.getElementById("increment").addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    // console.log("5");
+    const value = getInputValue("increment");
+    value.innerText = "";
+    e.preventDefault();
+    store.dispatch(increment(value));
+  }
+});
+
+document.getElementById("decrement").addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    // let value = incrementFunc("decrement", "text-data");
+    // setValue("text-data", value);
+    const value = getInputValue("decrement").toString();
+    value.innerText = "";
+    console.log(value);
+    e.preventDefault();
+    store.dispatch(decrement(value));
+    // e.target.value = "";
+    // return value;
+  }
+});
