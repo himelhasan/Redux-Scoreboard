@@ -27,7 +27,7 @@ const sum = (prevValue, newValue) => {
     return prevValue + newValue;
   }
   // check if number is 0
-  else if (newValue == 0) {
+  else if (newValue === 0) {
     console.log("The number is zero");
     return prevValue + newValue;
   } else if (newValue === NaN || newValue === undefined || newValue < 0) {
@@ -37,7 +37,7 @@ const sum = (prevValue, newValue) => {
 
   // if number is less than 0
   else {
-    alert("Please enter positive value!");
+    alert("Please enter  ELSE value!");
     return prevValue;
   }
 };
