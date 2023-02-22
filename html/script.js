@@ -52,12 +52,11 @@ const subtraction = (prevValue, newValue) => {
     else if (newValue == 0) {
       console.log("The number is zero");
       return prevValue - newValue;
-    }
-
-    // if number is less than 0
-    else {
+    } else if (newValue == NaN || newValue == undefined || newValue < 0) {
+      window.alert("Please enter positive value!");
+      return prevValue;
+    } else {
       console.log("enter a number");
-      alert("Please enter a number");
       return prevValue;
     }
   }
@@ -113,9 +112,9 @@ const allMatches = [
 ];
 console.log(allMatches.length);
 
-//  function to create a new match object
+// function to create a new match object
 const matchObjectGenerator = () => {
-  let value = 0;
+  let value = 100;
   let id = `text-data_${allMatches.length + 1}`;
   let incrementBtn = `increment_${allMatches.length + 1}`;
   let decrementBtn = `decrement_${allMatches.length + 1}`;
@@ -127,10 +126,9 @@ const matchObjectGenerator = () => {
 // ////////////////////////////
 
 // redux js codes
-
 console.log(allMatches[0].value);
-// action identifier
 
+// action identifier
 const INCREMENT = "increment";
 const DECREMENT = "decrement";
 
@@ -149,7 +147,6 @@ const decrement = (value) => {
 };
 
 // reducer function
-
 const scoreReducer = (state = allMatches, action) => {
   if (action.type === INCREMENT) {
     const updatedState = { ...state };
@@ -157,17 +154,27 @@ const scoreReducer = (state = allMatches, action) => {
     // updatedState[0].value += action.payload; // used += short hand  for addition assignment operator.
 
     // validation for blank entry, positive numbers and Nan
-    updatedState[0].value = sum(updatedState[0].value, action.payload);
+    updatedState.map((st) => {
+      st.value = sum(st.value, action.payload);
+    });
+
+    // updatedState[0].value = sum(updatedState[0].value, action.payload);
 
     console.log(updatedState);
     return updatedState;
   } else if (action.type === DECREMENT) {
-    const newObj = { ...state };
+    console.log(state);
+    const newObj = [...state];
     // newObj[0].value = newObj[0].value - action.payload;
     // newObj[0].value - +action.payload; // used -= short hand  for subtraction assignment operator.
-
+    state.map((st) => {
+      st.value = subtraction(st.value, action.payload);
+    });
     // validation for blank entry, positive numbers and Nan
-    newObj[0].value = subtraction(newObj[0].value, action.payload);
+    console.log(newObj);
+    // newObj[0].value = subtraction(newObj[0].value, action.payload);
+
+    // newObj.value = subtraction(newObj.value, action.payload);
     return newObj;
   } else return state;
 };
@@ -191,25 +198,25 @@ render();
 // subscribe to store
 store.subscribe(render);
 
-// event Listeners
-document.getElementById("increment").addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    const value = getInputValue("increment");
-    value.innerText = "";
-    e.preventDefault();
-    store.dispatch(increment(value));
-  }
-});
+// // event Listeners
+// document.getElementById("increment").addEventListener("keypress", function (e) {
+//   if (e.key === "Enter") {
+//     const value = getInputValue("increment");
+//     value.innerText = "";
+//     e.preventDefault();
+//     store.dispatch(increment(value));
+//   }
+// });
 
-document.getElementById("decrement").addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    const value = getInputValue("decrement").toString();
-    value.innerText = "";
-    console.log(value);
-    e.preventDefault();
-    store.dispatch(decrement(value));
-  }
-});
+// document.getElementById("decrement").addEventListener("keypress", function (e) {
+//   if (e.key === "Enter") {
+//     const value = getInputValue("decrement").toString();
+//     value.innerText = "";
+//     console.log(value);
+//     e.preventDefault();
+//     store.dispatch(decrement(value));
+//   }
+// });
 
 // add a new match to the list
 const addAMatch = async () => {
@@ -247,6 +254,7 @@ const addAMatch = async () => {
           name="decrement"
           id=${match.decrementBtn}
           class="lws-decrement"
+          onclick="cc(this)"
         />
       </form>
     </div>
@@ -258,4 +266,41 @@ const addAMatch = async () => {
 
   matches.appendChild(div);
   render();
+};
+
+// const cc = (e) => {
+//   console.log(e.parentNode);
+//   // e.parentNode.children[1].preventDefault();
+//   event.preventDefault();
+
+//   const decId = e.parentNode.children[1].id;
+//   console.log(decId);
+
+//   if (decId == !null) {
+//     document.getElementById(decId).addEventListener("keypress", function (e) {
+//       if (e.key === "Enter") {
+//         const value = getInputValue(decId).toString();
+//         value.innerText = "";
+//         console.log(value);
+//         event.preventDefault();
+//         store.dispatch(decrement(value));
+//       }
+//     });
+//   }
+// };
+const cc = (e) => {
+  const decId = e.id;
+  console.log(decId);
+  if (decId != null) {
+    const inputElement = document.getElementById(decId);
+    inputElement.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault(); // Prevent default form behavior
+        const value = getInputValue(decId).toString();
+        inputElement.value = ""; // Clear input value
+        // console.log(value);
+        store.dispatch(decrement(value));
+      }
+    });
+  }
 };
