@@ -49,10 +49,10 @@ const subtraction = (prevValue, newValue) => {
       return prevValue - newValue;
     }
     // check if number is 0
-    else if (newValue == 0) {
+    else if (newValue === 0) {
       console.log("The number is zero");
       return prevValue - newValue;
-    } else if (newValue == NaN || newValue == undefined || newValue < 0) {
+    } else if (newValue === NaN || newValue === undefined || newValue < 0) {
       window.alert("Please enter positive value!");
       return prevValue;
     } else {
@@ -77,27 +77,6 @@ function decrementFunc(newValueID, prevValueID) {
   return totalSum;
 }
 
-// event listener for raw js files without redux
-// document.getElementById("increment").addEventListener("keypress", function (e) {
-//   if (e.key === "Enter") {
-//     let value = incrementFunc("increment", "text-data");
-//     setValue("text-data", value);
-//     e.preventDefault();
-//     e.target.value = "";
-//     return value;
-//   }
-// });
-
-// document.getElementById("decrement").addEventListener("keypress", function (e) {
-//   if (e.key === "Enter") {
-//     let value = decrementFunc("decrement", "text-data");
-//     setValue("text-data", value);
-//     e.preventDefault();
-//     e.target.value = "";
-//     return value;
-//   }
-// });
-
 // add A match
 
 // all dom elements
@@ -112,113 +91,6 @@ const allMatches = [
 ];
 console.log(allMatches.length);
 
-// function to create a new match object
-const matchObjectGenerator = () => {
-  let value = 100;
-  let id = `text-data_${allMatches.length + 1}`;
-  let incrementBtn = `increment_${allMatches.length + 1}`;
-  let decrementBtn = `decrement_${allMatches.length + 1}`;
-  let matchNo = allMatches.length + 1;
-
-  return { value, id, incrementBtn, decrementBtn, matchNo };
-};
-
-// ////////////////////////////
-
-// redux js codes
-console.log(allMatches[0].value);
-
-// action identifier
-const INCREMENT = "increment";
-const DECREMENT = "decrement";
-
-// action creator
-const increment = (value) => {
-  return {
-    type: INCREMENT,
-    payload: value,
-  };
-};
-const decrement = (value) => {
-  return {
-    type: DECREMENT,
-    payload: value,
-  };
-};
-
-// reducer function
-const scoreReducer = (state = allMatches, action) => {
-  if (action.type === INCREMENT) {
-    const updatedState = { ...state };
-    // updatedState[0].value = updatedState[0].value + action.payload;
-    // updatedState[0].value += action.payload; // used += short hand  for addition assignment operator.
-
-    // validation for blank entry, positive numbers and Nan
-    updatedState.map((st) => {
-      st.value = sum(st.value, action.payload);
-    });
-
-    // updatedState[0].value = sum(updatedState[0].value, action.payload);
-
-    console.log(updatedState);
-    return updatedState;
-  } else if (action.type === DECREMENT) {
-    console.log(state);
-    const newObj = [...state];
-    // newObj[0].value = newObj[0].value - action.payload;
-    // newObj[0].value - +action.payload; // used -= short hand  for subtraction assignment operator.
-    state.map((st) => {
-      st.value = subtraction(st.value, action.payload);
-    });
-    // validation for blank entry, positive numbers and Nan
-    console.log(newObj);
-    // newObj[0].value = subtraction(newObj[0].value, action.payload);
-
-    // newObj.value = subtraction(newObj.value, action.payload);
-    return newObj;
-  } else return state;
-};
-
-// create store
-const store = Redux.createStore(scoreReducer);
-
-// render to ui
-const render = () => {
-  const state = store.getState();
-  // setValue(state[0].id, allMatches[0].value);
-
-  allMatches.map((v) => {
-    setValue(v.id, v.value);
-  });
-};
-
-// initially render
-render();
-
-// subscribe to store
-store.subscribe(render);
-
-// // event Listeners
-// document.getElementById("increment").addEventListener("keypress", function (e) {
-//   if (e.key === "Enter") {
-//     const value = getInputValue("increment");
-//     value.innerText = "";
-//     e.preventDefault();
-//     store.dispatch(increment(value));
-//   }
-// });
-
-// document.getElementById("decrement").addEventListener("keypress", function (e) {
-//   if (e.key === "Enter") {
-//     const value = getInputValue("decrement").toString();
-//     value.innerText = "";
-//     console.log(value);
-//     e.preventDefault();
-//     store.dispatch(decrement(value));
-//   }
-// });
-
-// add a new match to the list
 const addAMatch = async () => {
   // getting the all matches div
   const matches = document.getElementById("all-matches");
@@ -268,6 +140,107 @@ const addAMatch = async () => {
   render();
 };
 
+// function to create a new match object
+const matchObjectGenerator = () => {
+  let value = 100;
+  let id = `text-data_${allMatches.length + 1}`;
+  let incrementBtn = `increment_${allMatches.length + 1}`;
+  let decrementBtn = `decrement_${allMatches.length + 1}`;
+  let matchNo = allMatches.length + 1;
+
+  return { value, id, incrementBtn, decrementBtn, matchNo };
+};
+
+// redux js codes
+console.log(allMatches[0].value);
+
+// action identifier
+const INCREMENT = "increment";
+const DECREMENT = "decrement";
+
+// action creator
+const increment = (value) => {
+  return {
+    type: INCREMENT,
+    payload: value,
+  };
+};
+const decrement = (value, id) => {
+  console.log(id);
+  return {
+    type: DECREMENT,
+    payload: { value, id },
+  };
+};
+
+// reducer function
+const scoreReducer = (state = allMatches, action) => {
+  if (action.type === INCREMENT) {
+    const updatedState = { ...state };
+    // updatedState[0].value = updatedState[0].value + action.payload;
+    // updatedState[0].value += action.payload; // used += short hand  for addition assignment operator.
+
+    // validation for blank entry, positive numbers and Nan
+    updatedState.map((st) => {
+      st.value = sum(st.value, action.payload);
+    });
+
+    // updatedState[0].value = sum(updatedState[0].value, action.payload);
+
+    console.log(updatedState);
+    return updatedState;
+  } else if (action.type === DECREMENT) {
+    state.map((st) => {
+      if (st.id === action.payload.id) {
+        st.value = subtraction(st.value, action.payload.value);
+      }
+    });
+    return state;
+  } else return state;
+};
+
+// create store
+const store = Redux.createStore(scoreReducer);
+
+// render to ui
+const render = () => {
+  const state = store.getState();
+  // setValue(state[0].id, allMatches[0].value);
+
+  allMatches.map((v) => {
+    setValue(v.id, v.value);
+  });
+};
+
+// initially render
+render();
+
+// subscribe to store
+store.subscribe(render);
+
+// // event Listeners
+// document.getElementById("increment").addEventListener("keypress", function (e) {
+//   if (e.key === "Enter") {
+//     const value = getInputValue("increment");
+//     value.innerText = "";
+//     e.preventDefault();
+//     store.dispatch(increment(value));
+//   }
+// });
+
+// document.getElementById("decrement").addEventListener("keypress", function (e) {
+//   if (e.key === "Enter") {
+//     const value = getInputValue("decrement").toString();
+//     value.innerText = "";
+//     console.log(value);
+//     e.preventDefault();
+//     store.dispatch(decrement(value));
+//   }
+// });
+
+// add a new match to the list
+
+console.log(allMatches);
 // const cc = (e) => {
 //   console.log(e.parentNode);
 //   // e.parentNode.children[1].preventDefault();
@@ -289,6 +262,7 @@ const addAMatch = async () => {
 //   }
 // };
 const cc = (e) => {
+  const textID = e.parentNode.parentNode.parentNode.children[2].children[0].id;
   const decId = e.id;
   console.log(decId);
   if (decId != null) {
@@ -299,7 +273,9 @@ const cc = (e) => {
         const value = getInputValue(decId).toString();
         inputElement.value = ""; // Clear input value
         // console.log(value);
-        store.dispatch(decrement(value));
+        console.log(textID);
+
+        store.dispatch(decrement(value, textID));
       }
     });
   }
