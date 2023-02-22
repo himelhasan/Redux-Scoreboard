@@ -38,7 +38,7 @@ const sum = (prevValue, newValue) => {
   }
 };
 
-// // subtraction functions
+// subtraction functions
 const subtraction = (prevValue, newValue) => {
   if (prevValue < newValue) {
     return 0;
@@ -78,7 +78,7 @@ function decrementFunc(newValueID, prevValueID) {
   return totalSum;
 }
 
-// event listener
+// event listener for raw js files without redux
 // document.getElementById("increment").addEventListener("keypress", function (e) {
 //   if (e.key === "Enter") {
 //     let value = incrementFunc("increment", "text-data");
@@ -101,57 +101,32 @@ function decrementFunc(newValueID, prevValueID) {
 
 // add A match
 
-function addAMatch() {
-  const matches = document.getElementById("all-matches");
+// all dom elements
+const allMatches = [
+  {
+    id: "text-data_1",
+    incrementBtn: "increment",
+    decrementBtn: "decrement",
+    value: 12000,
+    matchNo: 1,
+  },
+];
+console.log(allMatches.length);
 
-  let div = document.createElement("div");
+//  function to create a new match object
+const matchObjectGenerator = () => {
+  let value = 0;
+  let id = `text-data_${allMatches.length + 1}`;
+  let incrementBtn = `increment_${allMatches.length + 1}`;
+  let decrementBtn = `decrement_${allMatches.length + 1}`;
+  let matchNo = allMatches.length + 1;
 
-  div.innerHTML = `<div class="match">
-  <div class="wrapper">
-    <button class="lws-delete">
-      <img src="./image/delete.svg" alt="" />
-    </button>
-    <h3 class="lws-matchName">Match 1</h3>
-  </div>
-  <div class="inc-dec">
-    <form class="incrementForm">
-      <h4>Increment</h4>
-      <input
-        type="number"
-        name="increment"
-        id="increment"
-        class="lws-increment"
-      />
-    </form>
-    <form class="decrementForm">
-      <h4>Decrement</h4>
-      <input
-        type="number"
-        name="decrement"
-        id="decrement"
-        class="lws-decrement"
-      />
-    </form>
-  </div>
-  <div class="numbers">
-    <h2 class="lws-singleResult" id="text-data">120</h2>
-  </div>
-</div>`;
-
-  matches.appendChild(div);
-}
+  return { value, id, incrementBtn, decrementBtn, matchNo };
+};
 
 // ////////////////////////////
 
 // redux js codes
-
-// all dom elements
-const allMatches = [
-  {
-    value: 12000,
-    id: "text-data",
-  },
-];
 
 console.log(allMatches[0].value);
 // action identifier
@@ -181,7 +156,7 @@ const scoreReducer = (state = allMatches, action) => {
     // updatedState[0].value = updatedState[0].value + action.payload;
     // updatedState[0].value += action.payload; // used += short hand  for addition assignment operator.
 
-    // validation for positive and Nan
+    // validation for blank entry, positive numbers and Nan
     updatedState[0].value = sum(updatedState[0].value, action.payload);
 
     console.log(updatedState);
@@ -191,7 +166,7 @@ const scoreReducer = (state = allMatches, action) => {
     // newObj[0].value = newObj[0].value - action.payload;
     // newObj[0].value - +action.payload; // used -= short hand  for subtraction assignment operator.
 
-    // validation for positive and Nan
+    // validation for blank entry, positive numbers and Nan
     newObj[0].value = subtraction(newObj[0].value, action.payload);
     return newObj;
   } else return state;
@@ -203,7 +178,11 @@ const store = Redux.createStore(scoreReducer);
 // render to ui
 const render = () => {
   const state = store.getState();
-  setValue(allMatches[0].id, allMatches[0].value);
+  // setValue(state[0].id, allMatches[0].value);
+
+  allMatches.map((v) => {
+    setValue(v.id, v.value);
+  });
 };
 
 // initially render
@@ -231,3 +210,52 @@ document.getElementById("decrement").addEventListener("keypress", function (e) {
     store.dispatch(decrement(value));
   }
 });
+
+// add a new match to the list
+const addAMatch = async () => {
+  // getting the all matches div
+  const matches = document.getElementById("all-matches");
+  let div = document.createElement("div");
+  //  adding new match data to the list
+  let newMatch = matchObjectGenerator();
+
+  allMatches.push(newMatch);
+  console.log(allMatches);
+
+  allMatches.map((match) => {
+    div.innerHTML = `<div class="match">
+    <div class="wrapper">
+      <button class="lws-delete">
+        <img src="./image/delete.svg" alt="" />
+      </button>
+      <h3 class="lws-matchName">Match ${match.matchNo}</h3>
+    </div>
+    <div class="inc-dec">
+      <form class="incrementForm">
+        <h4>Increment</h4>
+        <input
+          type="number"
+          name="increment"
+          id=${match.incrementBtn}
+          class="lws-increment"
+        />
+      </form>
+      <form class="decrementForm">
+        <h4>Decrement</h4>
+        <input
+          type="number"
+          name="decrement"
+          id=${match.decrementBtn}
+          class="lws-decrement"
+        />
+      </form>
+    </div>
+    <div class="numbers">
+      <h2 class="lws-singleResult" id=${match.id}>100000</h2>
+    </div>
+  </div>`;
+  });
+
+  matches.appendChild(div);
+  render();
+};
