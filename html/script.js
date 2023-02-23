@@ -156,6 +156,7 @@ const matchObjectGenerator = () => {
 // action identifier
 const INCREMENT = "increment";
 const DECREMENT = "decrement";
+const RESET = "reset";
 
 // action creator
 const increment = (value, id) => {
@@ -168,6 +169,11 @@ const decrement = (value, id) => {
   return {
     type: DECREMENT,
     payload: { value, id },
+  };
+};
+const reset = () => {
+  return {
+    type: RESET,
   };
 };
 
@@ -185,6 +191,11 @@ const scoreReducer = (state = allMatches, action) => {
       if (st.id === action.payload.id) {
         st.value = subtraction(st.value, action.payload.value);
       }
+    });
+    return state;
+  } else if (action.type === RESET) {
+    state.map((st) => {
+      st.value = 0;
     });
     return state;
   } else return state;
@@ -240,4 +251,9 @@ const incrementEventListener = (e) => {
       }
     });
   }
+};
+
+// reset event handlers function
+const resetEventListener = (e) => {
+  store.dispatch(reset());
 };
