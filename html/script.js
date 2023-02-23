@@ -86,7 +86,7 @@ const allMatches = [
     id: "text-data_1",
     incrementBtn: "increment",
     decrementBtn: "decrement",
-    value: 12000,
+    value: 120,
     matchNo: 1,
   },
 ];
