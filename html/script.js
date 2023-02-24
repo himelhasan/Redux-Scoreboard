@@ -30,13 +30,14 @@ const sum = (prevValue, newValue) => {
   else if (newValue === 0) {
     console.log("The number is zero");
     return prevValue + newValue;
-  } else if (newValue === NaN || newValue === undefined || newValue < 0) {
+  } else if (isNaN(newValue) || newValue === undefined || newValue < 0) {
     window.alert("Please enter positive value!");
     return prevValue;
   }
 
   // if number is less than 0
   else {
+    console.log(newValue);
     alert("Please enter  ELSE value!");
     return prevValue;
   }
@@ -56,7 +57,7 @@ const subtraction = (prevValue, newValue) => {
     else if (newValue === 0) {
       console.log("The number is zero");
       return prevValue - newValue;
-    } else if (newValue === NaN || newValue === undefined || newValue < 0) {
+    } else if (isNaN(newValue) || newValue === undefined || newValue < 0) {
       window.alert("Please enter positive value!");
       return prevValue;
     } else {
